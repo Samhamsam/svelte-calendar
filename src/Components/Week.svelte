@@ -31,7 +31,7 @@
         class:highlighted={areDatesEquivalent(day.date, highlighted)}
         class:shake-date={shouldShakeDate && areDatesEquivalent(day.date, shouldShakeDate)}
         class:disabled={!day.selectable}
-        class:has_rain={rainList.includes(day.date.getDate())}
+        class:has_rain={rainList.includes(day.date.getDate()) && day.partOfMonth}
         type="button"
         on:click={() => dispatch('dateSelected', day.date)}
       >
@@ -56,7 +56,7 @@
     -ms-grid-column: 1;
     grid-column: 1; 
   }
-  .has_rain:not(.outside-month):not(.disabled){
+  .has_rain{
     background-color: brown!important;
   }
   .week:nth-child(6n + 1) { 

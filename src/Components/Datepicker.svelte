@@ -13,7 +13,8 @@
 
   let popover;
 
-  export let rainList = [1,2,3]
+  export let rainList = [];
+  export let visibleMonth;
   export let format = '#{m}/#{d}/#{Y}';
   export let start = new Date(Date.now() - oneYear);
   export let end = new Date(Date.now() + oneYear);
@@ -305,6 +306,7 @@
           {selected}
           {highlighted}
           {shouldShakeDate}
+          bind:rainList
           id={visibleMonthId}
           on:dateSelected={e => registerSelection(e.detail)}
         />
