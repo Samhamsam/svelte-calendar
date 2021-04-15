@@ -1,6 +1,7 @@
 <script>
   import Week from './Week.svelte';
 
+  export let rainList;
   export let id;
   export let visibleMonth;
   export let selected;
@@ -19,7 +20,8 @@
 <div class="month-container">
   {#each visibleMonth.weeks as week (week.id) }
     <Week 
-      days={week.days} 
+      days={week.days}
+      bind:rainList
       {selected} 
       {highlighted} 
       {shouldShakeDate} 

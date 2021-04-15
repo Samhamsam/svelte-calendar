@@ -5,6 +5,7 @@
 
   const dispatch = createEventDispatcher();
 
+  export let rainList;
   export let days;
   export let selected;
   export let highlighted;
@@ -30,6 +31,7 @@
         class:highlighted={areDatesEquivalent(day.date, highlighted)}
         class:shake-date={shouldShakeDate && areDatesEquivalent(day.date, shouldShakeDate)}
         class:disabled={!day.selectable}
+        class:has_rain={rainList.includes(day.date.getDate())}
         type="button"
         on:click={() => dispatch('dateSelected', day.date)}
       >
@@ -53,6 +55,9 @@
     justify-content: space-around;
     -ms-grid-column: 1;
     grid-column: 1; 
+  }
+  .has_rain:not(.outside-month):not(.disabled){
+    background-color: brown!important;
   }
   .week:nth-child(6n + 1) { 
     -ms-grid-row: 1; 
