@@ -47,10 +47,11 @@
     ['December', 'Dec']
   ];
 
-  selected = (
+  // Leider muss entfernt werden sonst ist es mal start Time und mal selected
+/*   selected = (
     selected.getTime() < start.getTime()
     || selected.getTime() > end.getTime()
-  ) ? start : selected;
+  ) ? start : selected; */
 
   export let style = '';
 
