@@ -1,16 +1,16 @@
 <script>
-  import { areDatesEquivalent } from './lib/helpers';
-  import { fly, fade } from 'svelte/transition';
-  import { createEventDispatcher } from 'svelte';
+  import { areDatesEquivalent } from './lib/helpers'
+  import { fly, fade } from 'svelte/transition'
+  import { createEventDispatcher } from 'svelte'
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher()
 
-  export let rainList;
-  export let days;
-  export let selected;
-  export let highlighted;
-  export let shouldShakeDate;
-  export let direction;
+  export let rainList
+  export let days
+  export let selected
+  export let highlighted
+  export let shouldShakeDate
+  export let direction
 </script>
 
 <div 
@@ -56,8 +56,16 @@
     -ms-grid-column: 1;
     grid-column: 1; 
   }
-  .has_rain{
-    background-color: brown!important;
+  .has_rain::after/* :not(.outside-month):not(.disabled) */{
+    width: 3mm;
+    height: 3mm;
+    background: var(--highlight-color)!important;
+    content: "";
+    z-index: 10000;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border-radius: 2mm;
   }
   .week:nth-child(6n + 1) { 
     -ms-grid-row: 1; 

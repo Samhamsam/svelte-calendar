@@ -1,28 +1,28 @@
 <script>
-  import Month from './Month.svelte';
-  import NavBar from './NavBar.svelte';
-  import Popover from './Popover.svelte';
-  import { getMonths } from './lib/helpers';
-  import { formatDate, internationalize } from 'timeUtils';
-  import { keyCodes, keyCodesArray } from './lib/keyCodes';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import Month from './Month.svelte'
+  import NavBar from './NavBar.svelte'
+  import Popover from './Popover.svelte'
+  import { getMonths } from './lib/helpers'
+  import { formatDate, internationalize } from 'timeUtils'
+  import { keyCodes, keyCodesArray } from './lib/keyCodes'
+  import { onMount, createEventDispatcher } from 'svelte'
 
-  const dispatch = createEventDispatcher();
-  const today = new Date();
-  const oneYear = 1000 * 60 * 60 * 24 * 365;
+  const dispatch = createEventDispatcher()
+  const today = new Date()
+  const oneYear = 1000 * 60 * 60 * 24 * 365
 
-  let popover;
+  let popover
 
-  export let rainList = [];
-  export let visibleMonth;
-  export let format = '#{m}/#{d}/#{Y}';
-  export let start = new Date(Date.now() - oneYear);
-  export let end = new Date(Date.now() + oneYear);
-  export let selected = today;
-  export let dateChosen = false;
-  export let trigger = null;
-  export let selectableCallback = null;
-  export let weekStart = 0;
+  export let rainList = []
+  export let visibleMonth
+  export let format = '#{m}/#{d}/#{Y}'
+  export let start = new Date(Date.now() - oneYear)
+  export let end = new Date(Date.now() + oneYear)
+  export let selected = today
+  export let dateChosen = false
+  export let trigger = null
+  export let selectableCallback = null
+  export let weekStart = 0
   export let daysOfWeek = [
     ['Sunday', 'Sun'],
     ['Monday', 'Mon'],
@@ -31,7 +31,7 @@
     ['Thursday', 'Thu'],
     ['Friday', 'Fri'],
     ['Saturday', 'Sat']
-  ];
+  ]
   export let monthsOfYear = [
     ['January', 'Jan'],
     ['February', 'Feb'],
@@ -45,7 +45,8 @@
     ['October', 'Oct'],
     ['November', 'Nov'],
     ['December', 'Dec']
-  ];
+  ]
+
 
   // Leider muss entfernt werden sonst ist es mal start Time und mal selected
 /*   selected = (
@@ -53,59 +54,61 @@
     || selected.getTime() > end.getTime()
   ) ? start : selected; */
 
-  export let style = '';
+  export let style = ''
 
   // theming variables:
-  export let buttonBackgroundColor = '#fff';
-  export let buttonBorderColor = '#eee';
-  export let buttonTextColor = '#333';
-  export let highlightColor = '#f7901e';
-  export let dayBackgroundColor = 'none';
-  export let dayTextColor = '#4a4a4a';
-  export let dayHighlightedBackgroundColor = '#efefef';
-  export let dayHighlightedTextColor = '#4a4a4a';
+  export let buttonBackgroundColor = '#fff'
+  export let buttonBorderColor = '#eee'
+  export let buttonTextColor = '#333'
+  export let highlightColor = '#2f89fc'
+  export let dayBackgroundColor = 'none'
+  export let dayTextColor = '#4a4a4a'
+  export let dayHighlightedBackgroundColor = '#efefef'
+  export let dayHighlightedTextColor = '#4a4a4a'
 
-  internationalize({ daysOfWeek, monthsOfYear });
-  let sortedDaysOfWeek = weekStart === 0 ? daysOfWeek : (() => {
-    let dow = daysOfWeek.slice();
-    dow.push(dow.shift());
-    return dow;
-  })();
+  internationalize({ daysOfWeek, monthsOfYear })
+  const sortedDaysOfWeek = weekStart === 0
+    ? daysOfWeek
+    : (() => {
+        const dow = daysOfWeek.slice()
+        dow.push(dow.shift())
+        return dow
+      })()
 
-  let highlighted = today;
-  let shouldShakeDate = false;
-  let shakeHighlightTimeout;
-  let month = today.getMonth();
-  let year = today.getFullYear();
+  let highlighted = today
+  let shouldShakeDate = false
+  let shakeHighlightTimeout
+  let month = today.getMonth()
+  let year = today.getFullYear()
 
-  let isOpen = false;
-  let isClosing = false;
+  let isOpen = false
+  let isClosing = false
 
-  today.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0)
 
-  function assignmentHandler(formatted) {
-    if (!trigger) return;
-    trigger.innerHTML = formatted;
+  function assignmentHandler (formatted) {
+    if (!trigger) return
+    trigger.innerHTML = formatted
   }
 
-  $: months = getMonths(start, end, selectableCallback, weekStart);
+  $: months = getMonths(start, end, selectableCallback, weekStart)
 
-  let monthIndex = 0;
+  let monthIndex = 0
   $: {
-    monthIndex = 0;
+    monthIndex = 0
     for (let i = 0; i < months.length; i += 1) {
       if (months[i].month === month && months[i].year === year) {
-        monthIndex = i;
+        monthIndex = i
       }
     }
   }
-  $: visibleMonth = months[monthIndex];
+  $: visibleMonth = months[monthIndex]
 
-  $: visibleMonthId = year + month / 100;
-  $: lastVisibleDate = visibleMonth.weeks[visibleMonth.weeks.length - 1].days[6].date;
-  $: firstVisibleDate = visibleMonth.weeks[0].days[0].date;
-  $: canIncrementMonth = monthIndex < months.length - 1;
-  $: canDecrementMonth = monthIndex > 0;
+  $: visibleMonthId = year + month / 100
+  $: lastVisibleDate = visibleMonth.weeks[visibleMonth.weeks.length - 1].days[6].date
+  $: firstVisibleDate = visibleMonth.weeks[0].days[0].date
+  $: canIncrementMonth = monthIndex < months.length - 1
+  $: canDecrementMonth = monthIndex > 0
   $: wrapperStyle = `
     --button-background-color: ${buttonBackgroundColor};
     --button-border-color: ${buttonBorderColor};
@@ -116,148 +119,148 @@
     --day-highlighted-background-color: ${dayHighlightedBackgroundColor};
     --day-highlighted-text-color: ${dayHighlightedTextColor};
     ${style}
-  `;
+  `
 
-  export let formattedSelected;
+  export let formattedSelected
   $: {
     formattedSelected = typeof format === 'function'
       ? format(selected)
-      : formatDate(selected, format);
+      : formatDate(selected, format)
   }
 
   onMount(() => {
-    month = selected.getMonth();
-    year = selected.getFullYear();
-  });
+    month = selected.getMonth()
+    year = selected.getFullYear()
+  })
 
-  function changeMonth(selectedMonth) {
-    month = selectedMonth;
-    highlighted = new Date(year, month, 1);
+  function changeMonth (selectedMonth) {
+    month = selectedMonth
+    highlighted = new Date(year, month, 1)
   }
 
-  function incrementMonth(direction, day = 1) {
-    if (direction === 1 && !canIncrementMonth) return;
-    if (direction === -1 && !canDecrementMonth) return;
-    let current = new Date(year, month, 1);
-    current.setMonth(current.getMonth() + direction);
-    month = current.getMonth();
-    year = current.getFullYear();
-    highlighted = new Date(year, month, day);
+  function incrementMonth (direction, day = 1) {
+    if (direction === 1 && !canIncrementMonth) return
+    if (direction === -1 && !canDecrementMonth) return
+    const current = new Date(year, month, 1)
+    current.setMonth(current.getMonth() + direction)
+    month = current.getMonth()
+    year = current.getFullYear()
+    highlighted = new Date(year, month, day)
   }
 
-  function getDefaultHighlighted() {
-    return new Date(selected);
+  function getDefaultHighlighted () {
+    return new Date(selected)
   }
 
   const getDay = (m, d, y) => {
-    let theMonth = months.find(aMonth => aMonth.month === m && aMonth.year === y);
-    if (!theMonth) return null;
+    const theMonth = months.find(aMonth => aMonth.month === m && aMonth.year === y)
+    if (!theMonth) return null
     // eslint-disable-next-line
     for (let i = 0; i < theMonth.weeks.length; ++i) {
       // eslint-disable-next-line
       for (let j = 0; j < theMonth.weeks[i].days.length; ++j) {
-        let aDay = theMonth.weeks[i].days[j];
-        if (aDay.month === m && aDay.day === d && aDay.year === y) return aDay;
+        const aDay = theMonth.weeks[i].days[j]
+        if (aDay.month === m && aDay.day === d && aDay.year === y) return aDay
       }
     }
-    return null;
-  };
+    return null
+  }
 
-  function incrementDayHighlighted(amount) {
-    let proposedDate = new Date(highlighted);
-    proposedDate.setDate(highlighted.getDate() + amount);
-    let correspondingDayObj = getDay(
+  function incrementDayHighlighted (amount) {
+    const proposedDate = new Date(highlighted)
+    proposedDate.setDate(highlighted.getDate() + amount)
+    const correspondingDayObj = getDay(
       proposedDate.getMonth(),
       proposedDate.getDate(),
       proposedDate.getFullYear()
-    );
-    if (!correspondingDayObj || !correspondingDayObj.isInRange) return;
-    highlighted = proposedDate;
+    )
+    if (!correspondingDayObj || !correspondingDayObj.isInRange) return
+    highlighted = proposedDate
     if (amount > 0 && highlighted > lastVisibleDate) {
-      incrementMonth(1, highlighted.getDate());
+      incrementMonth(1, highlighted.getDate())
     }
     if (amount < 0 && highlighted < firstVisibleDate) {
-      incrementMonth(-1, highlighted.getDate());
+      incrementMonth(-1, highlighted.getDate())
     }
   }
 
-  function checkIfVisibleDateIsSelectable(date) {
-    const proposedDay = getDay(date.getMonth(), date.getDate(), date.getFullYear());
-    return proposedDay && proposedDay.selectable;
+  function checkIfVisibleDateIsSelectable (date) {
+    const proposedDay = getDay(date.getMonth(), date.getDate(), date.getFullYear())
+    return proposedDay && proposedDay.selectable
   }
 
-  function shakeDate(date) {
-    clearTimeout(shakeHighlightTimeout);
-    shouldShakeDate = date;
+  function shakeDate (date) {
+    clearTimeout(shakeHighlightTimeout)
+    shouldShakeDate = date
     shakeHighlightTimeout = setTimeout(() => {
-      shouldShakeDate = false;
-    }, 700);
+      shouldShakeDate = false
+    }, 700)
   }
 
-  function assignValueToTrigger(formatted) {
-    assignmentHandler(formatted);
+  function assignValueToTrigger (formatted) {
+    assignmentHandler(formatted)
   }
 
-  function registerSelection(chosen) {
-    if (!checkIfVisibleDateIsSelectable(chosen)) return shakeDate(chosen);
+  function registerSelection (chosen) {
+    if (!checkIfVisibleDateIsSelectable(chosen)) return shakeDate(chosen)
     // eslint-disable-next-line
     close();
-    selected = chosen;
-    dateChosen = true;
-    assignValueToTrigger(formattedSelected);
-    return dispatch('dateSelected', { date: chosen });
+    selected = chosen
+    dateChosen = true
+    assignValueToTrigger(formattedSelected)
+    return dispatch('dateSelected', { date: chosen })
   }
 
-  function handleKeyPress(evt) {
-    if (keyCodesArray.indexOf(evt.keyCode) === -1) return;
-    evt.preventDefault();
+  function handleKeyPress (evt) {
+    if (keyCodesArray.indexOf(evt.keyCode) === -1) return
+    evt.preventDefault()
     switch (evt.keyCode) {
       case keyCodes.left:
-        incrementDayHighlighted(-1);
-        break;
+        incrementDayHighlighted(-1)
+        break
       case keyCodes.up:
-        incrementDayHighlighted(-7);
-        break;
+        incrementDayHighlighted(-7)
+        break
       case keyCodes.right:
-        incrementDayHighlighted(1);
-        break;
+        incrementDayHighlighted(1)
+        break
       case keyCodes.down:
-        incrementDayHighlighted(7);
-        break;
+        incrementDayHighlighted(7)
+        break
       case keyCodes.pgup:
-        incrementMonth(-1);
-        break;
+        incrementMonth(-1)
+        break
       case keyCodes.pgdown:
-        incrementMonth(1);
-        break;
+        incrementMonth(1)
+        break
       case keyCodes.escape:
         // eslint-disable-next-line
         close();
-        break;
+        break
       case keyCodes.enter:
-        registerSelection(highlighted);
-        break;
+        registerSelection(highlighted)
+        break
       default:
-        break;
+        break
     }
   }
 
-  function registerClose() {
-    document.removeEventListener('keydown', handleKeyPress);
-    dispatch('close');
+  function registerClose () {
+    document.removeEventListener('keydown', handleKeyPress)
+    dispatch('close')
   }
 
-  function close() {
-    popover.close();
-    registerClose();
+  function close () {
+    popover.close()
+    registerClose()
   }
 
-  function registerOpen() {
-    highlighted = getDefaultHighlighted();
-    month = selected.getMonth();
-    year = selected.getFullYear();
-    document.addEventListener('keydown', handleKeyPress);
-    dispatch('open');
+  function registerOpen () {
+    highlighted = getDefaultHighlighted()
+    month = selected.getMonth()
+    year = selected.getFullYear()
+    document.addEventListener('keydown', handleKeyPress)
+    dispatch('open')
   }
 </script>
 
